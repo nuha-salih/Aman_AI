@@ -31,10 +31,10 @@ Aman AI is a **dual-sided AI platform**:
 ## 🏗️ System Architecture
 [ Input ] ──> [ Audio Analysis ] ──> [ Speech-to-Text ] ──> [ GPT-4o Contextual Analysis ]
 ## 🚀 Getting Started
-```bash
+ 
 ## 👥 Team
-- **Muzna** — Lead Developer & Architect
-- **[اسم زميلتك هنا]** — [تخصصها/دورها]
+- **نهى صلاح محمد احمد ** — Lead Developer & Architect
+- **[اخذ معلومات الفريق وارجع اكتبها هنا ]** — [تخصصها/دورها]
 
 ## 📄 License
 - Distributed under the MIT License.
