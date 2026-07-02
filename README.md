@@ -120,10 +120,7 @@ cd Aman_AI_Model
 # 2. Install dependencies
 pip install fastapi uvicorn openai python-dotenv pandas scikit-learn librosa joblib
 
-# 3. Add your OpenAI API key
-echo "OPENAI_API_KEY=your_key_here" > .env
-
-# 4. Run the API
+# 3. Run the API
 uvicorn main:app --reload
 ```
 
@@ -184,9 +181,13 @@ Aman AI is offered as an **API-first product** that banks integrate directly int
 
 ## 👥 Team
 
-- **نهى صلاح محمد احمد ,اعدل بقيه اسماء الفريق والادوار** — Lead Developer & Architect
-- **[اسم عضو الفريق]** — [تخصصها/دورها]
+- **نهى صلاح محمد احمد
+- مريم مودوب فاقبو
+- سلوى حسين
+- محمد ال فرج
+- مأمون فرج
 
+ 
 ## 📄 License
 
 Distributed under the MIT License.
