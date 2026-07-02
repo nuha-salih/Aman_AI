@@ -32,20 +32,16 @@ Aman AI is a **dual-sided AI platform**:
 [ Input ] ──> [ Audio Analysis ] ──> [ Speech-to-Text ] ──> [ GPT-4o Contextual Analysis ]
 ## 🚀 Getting Started
 ```bash
-git clone <repo-url>
-cd Aman_AI_Model
-pip install -r requirements.txt
-echo "OPENAI_API_KEY=your_key_here" > .env
-uvicorn main:app --reload
-👥 Team
-Muzna — Lead Developer & Architect
-[اسم زميلتك هنا] — [تخصصها/دورها]
-📄 License
-Distributed under the MIT License.
-<div align="center">
-Built for Amd Hackathon (هكثون أمد) — Fintech Track
-Aman AI — because trust shouldn't be guesswork.
-</div>
+## 👥 Team
+- **Muzna** — Lead Developer & Architect
+- **[اسم زميلتك هنا]** — [تخصصها/دورها]
 
+## 📄 License
+- Distributed under the MIT License.
+
+---
+### Built for Amd Hackathon (هكثون أمد) — Fintech Track
+
+*Aman AI — because trust shouldn't be guesswork.*
 
 
