@@ -184,7 +184,7 @@ Aman AI is offered as an **API-first product** that banks integrate directly int
 
 ## 👥 Team
 
-- **نهى صلاح محمد احمد** — Lead Developer & Architect
+- **نهى صلاح محمد احمد ,اعدل بقيه اسماء الفريق والادوار** — Lead Developer & Architect
 - **[اسم عضو الفريق]** — [تخصصها/دورها]
 
 ## 📄 License
