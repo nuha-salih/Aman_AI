@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Alinma Protect – Aman AI Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ─── Reset & Base ─────────────────────────────────────────────── */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #000000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        #phone {
+            width: 390px; height: 844px; background: #0a1226; border-radius: 40px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); position: relative; display: flex; flex-direction: column;
+        }
+        .screen {
+            display: none; flex: 1; flex-direction: column; height: 100%; overflow-y: auto;
+            padding: 24px 20px 80px 20px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+        }
+        .screen.active { display: flex; }
+        .screen-header { display: flex; align-items: center; color: #ffffff; margin-bottom: 24px; }
+        .screen-header h2 { font-size: 22px; font-weight: 700; }
+
+        /* ─── SPLASH (Original) ─────────────────────────────────────────── */
+        #splash { background: #ffffff; justify-content: center; align-items: center; text-align: center; }
+        #splash .logo-box { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px; }
+        #splash .logo-text { font-size: 40px; font-weight: 700; color: #0a1226; letter-spacing: 1px; }
+        #splash .logo-icon { width: 60px; height: 60px; background: #0a1226; border-radius: 16px; position: relative; }
+        #splash .logo-icon::after { content: ''; position: absolute; top: 12px; left: 26px; width: 8px; height: 36px; background: #ffffff; border-radius: 4px; }
+        #splash .slogan-ar { font-size: 26px; font-weight: 700; color: #0a1226; margin-bottom: 8px; }
+        #splash .slogan-en { font-size: 22px; color: #0a1226; }
+
+        /* ─── LOGIN (Original) ──────────────────────────────────────────── */
+        #login { background: #0a1226; justify-content: space-between; padding-top: 40px; }
+        #login .logo-sm { width: 28px; height: 28px; background: #ffffff; border-radius: 6px; position: relative; margin-bottom: 10px; }
+        #login .logo-sm::after { content: ''; position: absolute; top: 5px; left: 11px; width: 6px; height: 18px; background: #0a1226; border-radius: 2px; }
+        #login .welcome { font-size: 28px; font-weight: 600; color: #ffffff; line-height: 1.3; }
+        #login .input-wrap { background: #132b4a; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; color: #ffffff; }
+        #login .input-wrap i { color: #d1d5db; width: 20px; text-align: center; }
+        #login .input-wrap input { flex: 1; background: transparent; border: none; color: #ffffff; font-size: 16px; outline: none; }
+        #login .input-wrap input::placeholder { color: #9ca3af; }
+        #login .options { display: flex; align-items: center; gap: 12px; color: #9ca3af; font-size: 14px; margin-top: 4px; }
+        #login .options i { color: #9ca3af; cursor: pointer; }
+        #login .btn-orange { width: 100%; padding: 16px; border: none; border-radius: 30px; background: #f7931e; color: #0a1226; font-weight: 700; font-size: 16px; cursor: pointer; margin: 16px 0 8px; }
+        #login .btn-orange:hover { background: #e0830d; }
+        #login .forgot-pass { text-align: center; color: #9ca3af; font-size: 14px; margin: 16px 0 20px; cursor: pointer; }
+        #login .bottom-footer { display: flex; justify-content: space-between; font-size: 14px; color: #ffffff; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+        #login .bottom-footer span { cursor: pointer; }
+        #login .copyright { font-size: 11px; color: #6b7280; text-align: center; margin-top: 8px; }
+
+        /* ─── HOME SCREEN (Original) ────────────────────────────────────── */
+        #home { background: #0a1226; padding-bottom: 80px; }
+        .home-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .home-header .user { display: flex; align-items: center; gap: 12px; }
+        .home-header .user .avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: #0a1226; display: flex; justify-content: center; align-items: center; font-weight: 700; }
+        .home-header .user .info { display: flex; flex-direction: column; }
+        .home-header .user .info .name { font-weight: 600; font-size: 15px; color: #ffffff; }
+        .home-header .user .info .sub { font-size: 10px; color: #9ca3af; }
+        .home-header .right-icons { display: flex; gap: 16px; color: #9ca3af; font-size: 16px; }
+
+        .balance-info { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; text-align: center; }
+        .balance-info .account { font-size: 13px; color: #9ca3af; margin-bottom: 4px; }
+        .balance-info .amount { font-size: 28px; font-weight: 700; color: #ffffff; }
+        .balance-info .toggle-blur { width: 40px; height: 20px; background: #2c3e50; border-radius: 12px; margin-top: 6px; position: relative; }
+        .balance-info .toggle-blur::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: #ffffff; border-radius: 50%; }
+
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+        .quick-grid .item { display: flex; flex-direction: column; align-items: center; background: #ffffff; border-radius: 12px; padding: 12px 4px; cursor: pointer; }
+        .quick-grid .item .icon-box { width: 32px; height: 32px; background: #fff7ed; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #f7931e; margin-bottom: 4px; }
+        .quick-grid .item .label { font-size: 10px; color: #374151; font-weight: 500; text-align: center; }
+
+        .home-card { background: #142b4a; border-radius: 16px; padding: 16px 18px; margin-bottom: 14px; position: relative; display: flex; justify-content: space-between; }
+        .home-card.akthr-card { background: linear-gradient(135deg, #3b1f5c, #1e3a5f); }
+        .home-card .text-side { display: flex; flex-direction: column; flex: 1; justify-content: center; }
+        .home-card .text-side .title { font-weight: 600; font-size: 16px; color: #ffffff; margin-bottom: 4px; }
+        .home-card .text-side .sub { font-size: 13px; color: #9ca3af; }
+        .home-card .text-side .link { color: #f7931e; font-size: 14px; margin-top: 8px; display: inline-block; font-weight: 600; cursor: pointer; }
+        .home-card .img-side { width: 70px; height: 70px; border-radius: 12px; background: #2c3e50; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .home-card.mada-card { align-items: center; }
+        .home-card.mada-card .img-side { background: transparent; }
+        .home-card.mada-card .visa-box { background: #ffffff; padding: 8px 16px; border-radius: 8px; color: #1a2b8c; font-weight: 700; font-style: italic; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 80px; height: 60px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .home-card.mada-card .visa-box small { font-size: 8px; font-weight: 400; color: #6b7280; margin-top: 4px; }
+        .home-card.update-card { align-items: center; }
+        .home-card.update-card .img-side { background: transparent; width: auto; color: #ffffff; font-size: 36px; }
+        .home-card .btn-orange-pill { background: #f7931e; border: none; border-radius: 20px; padding: 6px 18px; font-weight: 600; color: #0a1226; cursor: pointer; margin: 8px 0 4px; display: inline-block; font-size: 14px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+        .grid-2 .grid-card { background: #142b4a; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 110px; cursor: pointer; }
+        .grid-2 .grid-card:hover { background: #1e3a5f; }
+        .grid-2 .grid-card .g-title { font-weight: 700; font-size: 16px; color: #ffffff; }
+        .grid-2 .grid-card .g-sub { font-size: 12px; color: #9ca3af; margin: 4px 0; line-height: 1.4; }
+        .grid-2 .grid-card .g-link { color: #f7931e; font-size: 13px; font-weight: 600; margin-top: 6px; }
+
+        .donations-card { background: #142b4a; border-radius: 16px; padding: 16px; }
+        .donations-card .donate-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; }
+        .donations-card .donate-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 10px; }
+        .donations-card .donate-item i { font-size: 20px; color: #ffffff; margin-bottom: 4px; }
+        .customize-home { text-align: center; color: #f7931e; font-size: 14px; font-weight: 500; margin-top: 12px; cursor: pointer; }
+
+        /* ─── BOTTOM NAV (Original) ────────────────────────────────────── */
+        #bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; background: #0e1a30; padding: 8px 0 16px 0; border-top: 1px solid #142b4a; display: flex; justify-content: space-around; z-index: 100; height: 70px; }
+        #bottom-nav .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; cursor: pointer; transition: 0.2s; font-size: 10px; gap: 4px; background: transparent; border: none; }
+        #bottom-nav .nav-item i { font-size: 22px; }
+        #bottom-nav .nav-item.active { color: #f7931e; }
+        #bottom-nav .nav-item:hover { color: #f7931e; }
+
+        /* ─── AI PROTECTION (Original Screenshot) ──────────────────────── */
+        #ai-protection { background: #0a1226; padding-bottom: 80px; }
+        .protect-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .protect-header .logo-row { display: flex; align-items: center; gap: 10px; }
+        .protect-header .logo-box { width: 36px; height: 36px; background: #4b7bec; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #ffffff; font-weight: 700; }
+        .protect-header .title { font-weight: 700; font-size: 16px; color: #ffffff; }
+        .protect-header .sub { font-size: 12px; color: #9ca3af; }
+        .protect-header i { font-size: 22px; color: #ffffff; cursor: pointer; }
+
+        .protect-card { background: #142b4a; border-radius: 20px; padding: 18px; margin-bottom: 24px; }
+        .protect-card .protect-icon { color: #4b7bec; font-size: 12px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .protect-card .protect-title { font-size: 20px; font-weight: 600; line-height: 1.4; color: #ffffff; margin-bottom: 6px; }
+        .protect-card .protect-desc { font-size: 13px; color: #9ca3af; margin-bottom: 16px; }
+        .protect-toggle { background: #1e3a5f; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .protect-toggle .toggle-title { font-weight: 600; font-size: 14px; color: #ffffff; }
+        .protect-toggle .toggle-desc { font-size: 12px; color: #9ca3af; }
+
+        .section-title { font-size: 13px; color: #6b7280; font-weight: 600; margin: 16px 0 10px; }
+        .quick-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .action-card { background: #142b4a; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
+        .action-card:hover { background: #1e3a5f; transform: translateY(-2px); }
+        .action-card .icon-bg { width: 36px; height: 36px; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #ffffff; margin-bottom: 4px; }
+        .icon-bg.blue { background: #2b6b9a; } .icon-bg.brown { background: #8c5a45; } .icon-bg.purple { background: #664d9c; } .icon-bg.green { background: #1f7541; }
+        .action-card .action-title { font-weight: 600; font-size: 15px; color: #ffffff; }
+        .action-card .action-desc { font-size: 12px; color: #9ca3af; }
+        .analysis-list { background: #142b4a; border-radius: 16px; padding: 4px 0; }
+        .analysis-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #1e3a5f; color: #ffffff; }
+        .analysis-item:last-child { border-bottom: none; }
+        .analysis-item .list-title { font-weight: 600; font-size: 15px; }
+        .analysis-item .list-desc { font-size: 13px; color: #9ca3af; }
+
+        /* ─── NEW: TRANSFER, PAYMENTS, STORE INTERFACES ────────────────── */
+        .list-item { background: #142b4a; border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; cursor: pointer; }
+        .list-item:hover { background: #1e3a5f; }
+        .list-item i { color: #f7931e; font-size: 20px; width: 24px; text-align: center; }
+        .list-item .info { flex: 1; }
+        .list-item .info .title { color: #ffffff; font-weight: 500; font-size: 15px; }
+        .list-item .info .desc { color: #9ca3af; font-size: 12px; }
+
+        /* ─── NEW FUNCTIONAL OVERRIDES ──────────────────────────────────── */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4a5d73; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2196F3; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .badge-high { background: #3a231f; color: #f87171; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-left: auto; }
+
+        #toast { display: none; position: absolute; bottom: 80px; left: 20px; right: 20px; background: #1e3a5f; color: #fff; padding: 12px; border-radius: 10px; text-align: center; z-index: 300; font-size: 14px; border: 1px solid #2a4a6f; }
+        #toast.error { background: #3a1f1f; border-color: #f44336; }
+        #toast.success { background: #1f3a2f; border-color: #4caf50; }
+
+        #modal-overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 200; justify-content: center; align-items: center; padding: 20px; }
+        .modal-card { background: #142b4a; border-radius: 20px; padding: 24px; width: 100%; max-width: 340px; position: relative; }
+        .modal-card .close { position: absolute; top: 16px; right: 16px; color: #9ca3af; cursor: pointer; font-size: 24px; }
+        .modal-card h3 { color: #fff; margin-bottom: 12px; }
+        .modal-card input[type="text"], .modal-card textarea { width: 100%; padding: 12px; background: #1e3a5f; border: 1px solid #2a4a6f; border-radius: 8px; color: #fff; margin-bottom: 12px; }
+        .modal-card input[type="file"] { width: 100%; padding: 10px; background: #1e3a5f; border-radius: 8px; color: #fff; margin-bottom: 12px; }
+        .modal-card .btn-submit { width: 100%; padding: 12px; background: #f7931e; border: none; border-radius: 30px; font-weight: 700; color: #0a1226; cursor: pointer; }
+        .modal-card .result-box { margin-top: 12px; background: #0a1226; padding: 12px; border-radius: 8px; }
+        
+        #history-modal-overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: flex-end; padding: 20px; }
+        #history-modal-overlay .content { background:#142b4a; width:100%; max-height:60%; padding:20px; border-radius:20px; overflow-y:auto; }
+        #history-modal-overlay .content h3 { color:#fff; margin-bottom:16px; }
+
+        /* ─── Floating Live Bubble ──────────────────────────────────────── */
+        #protection-bubble { display: none; position: absolute; top: 20px; right: 20px; background: #142b4a; color: #ffffff; padding: 8px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.8); z-index: 150; cursor: pointer; align-items: center; gap: 10px; border: 1px solid #2c3e50; }
+        #protection-bubble .pulse { width: 10px; height: 10px; border-radius: 50%; background: #4caf50; animation: pulse 1.5s infinite; }
+        #protection-bubble .text { display: flex; flex-direction: column; line-height: 1.2; }
+        #protection-bubble .text .main { font-size: 12px; font-weight: 600; }
+        #protection-bubble .text .sub { font-size: 9px; color: #9ca3af; }
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
+
+        .btn-back { color: #f7931e; cursor: pointer; margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div id="phone">
+    <!-- ─── SCREENS ────────────────────────────────────────────── -->
+    <div id="splash" class="screen active">
+        <div class="logo-box">
+            <div class="logo-text">الإنماء</div>
+            <div class="logo-icon"></div>
+            <div style="font-size: 26px; font-weight: 700; color:#0a1226; margin-left: -8px;">alinma</div>
+        </div>
+        <div class="slogan-ar">نبتكر لنتقدم</div>
+        <div class="slogan-en">One step ahead</div>
+    </div>
+
+    <div id="login" class="screen">
+        <div>
+            <div class="logo-sm"></div>
+            <div class="welcome">Welcome back<br>Maryam</div>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+                <div class="input-wrap"><i class="far fa-user"></i><input type="text" placeholder="Username or ID" value="maryam@example.com"></div>
+                <div class="input-wrap"><i class="fas fa-lock"></i><input type="password" placeholder="Password" value="••••••••"><i class="fas fa-eye-slash" style="font-size: 14px; color: #9ca3af; cursor: pointer;"></i></div>
+            </div>
+            <div class="options"><i class="far fa-square"></i>Remember me</div>
+            <button class="btn-orange" onclick="goTo('home')">Login</button>
+            <div class="forgot-pass">Forget Your Credentials?</div>
+            <button class="btn-orange" onclick="goTo('home')">Quack Login</button>
+        </div>
+        <div>
+            <div class="bottom-footer">
+                <span>Contact Us</span>
+                <span>Switch User</span>
+                <span>Emergency Stop</span>
+            </div>
+            <div class="copyright">©Alinma 2026. All rights reserved</div>
+        </div>
+    </div>
+
+    <div id="home" class="screen">
+        <div class="home-header">
+            <div class="user">
+                <div class="avatar">M</div>
+                <div class="info"><div class="name">Maryam</div><div class="sub">مريم</div></div>
+            </div>
+            <div class="right-icons"><i class="fas fa-pen"></i><i class="fas fa-bell"></i><i class="fas fa-qrcode"></i></div>
+        </div>
+        <div class="balance-info">
+            <div class="account">Current Account ***1234</div>
+            <div class="amount">2000.50 ر.س</div>
+            <div class="toggle-blur"></div>
+        </div>
+        <div class="quick-grid">
+            <div class="item"><div class="icon-box"><i class="fas fa-file-invoice"></i></div><div class="label">Pay bills</div></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-arrow-right-arrow-left"></i></div><div class="label">Quick transfers</div></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-mobile-screen"></i></div><div class="label">Mobile recharge</div></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-car"></i></div><div class="label">Traffic violations</div></div>
+        </div>
+        <div class="home-card akthr-card"><div class="text-side"><div class="title">Pay with akthr points</div><div class="sub">Through alinma Store</div></div></div>
+        <div class="home-card mada-card">
+            <div class="text-side"><div class="title">mada Debit Card Classic</div><div class="sub">**** 5584</div><div class="link">Cards →</div></div>
+            <div class="visa-box">VISA<small>New Card</small></div>
+        </div>
+        <div class="home-card update-card">
+            <div class="text-side">
+                <div class="title">Your quick access is expiring soon!</div>
+                <div class="sub">Update quick access</div>
+                <div><button class="btn-orange-pill">Update</button></div>
+                <div class="link">Actions →</div>
+            </div>
+            <div class="img-side"><i class="fas fa-user-secret"></i></div>
+        </div>
+        <div class="home-card">
+            <div class="text-side"><div class="title">Get finance</div><div class="sub">Easily apply for tailored financing options</div><div class="link">Finance →</div></div>
+            <div class="img-side" style="background:#aeb6bf;"></div>
+        </div>
+        <div class="home-card">
+            <div class="text-side"><div class="title">July insights</div><div class="sub" style="font-size: 24px; font-weight: 600; color: #ffffff; margin: 6px 0;">0.00 ر.س</div><div class="sub">You've spent same amount last month!</div><div class="link">Insights →</div></div>
+        </div>
+        <div class="grid-2">
+            <div class="grid-card" onclick="goTo('ai-protection')">
+                <div><div class="g-title">Aman AI</div><div class="g-sub">Detect Before You Trust</div></div>
+                <div class="g-link">Start Protection →</div>
+            </div>
+            <div class="grid-card">
+                <div><div class="g-title">NAMA</div><div class="g-sub">invest easily from a one subscription</div></div>
+                <div class="g-link">NAMA →</div>
+            </div>
+        </div>
+        <div class="home-card">
+            <div class="text-side"><div class="title">Invest easier</div><div class="sub">Various options that suit your plans</div><div class="link">Investments →</div></div>
+            <div class="img-side" style="background:#aeb6bf; background-image: linear-gradient(to top right, #aeb6bf, #6b7280);"></div>
+        </div>
+        <div class="donations-card">
+            <div class="text-side"><div class="title" style="color:#ffffff; margin-bottom: 8px;">Donations</div></div>
+            <div class="donate-grid">
+                <div class="donate-item"><i class="fas fa-hand-holding-heart"></i>Zakat</div>
+                <div class="donate-item"><i class="fas fa-mosque"></i>WAQFY</div>
+                <div class="donate-item"><i class="fas fa-ship"></i>Sahem</div>
+                <div class="donate-item"><i class="fas fa-child"></i>Orphans</div>
+            </div>
+            <div class="link" style="color: #f7931e; font-size: 14px; font-weight: 600; margin-top: 4px;">Donations →</div>
+        </div>
+        <div class="customize-home">Customize Home</div>
+    </div>
+
+    <!-- ─── AI PROTECTION ────────────────────────────────────────── -->
+    <div id="ai-protection" class="screen">
+        <div class="protect-header">
+            <div class="logo-row">
+                <div class="logo-box">A</div>
+                <div><div class="title">Alinma Bank</div><div class="sub">AI Protected</div></div>
+            </div>
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="protect-card">
+            <div class="protect-icon"><i class="fas fa-shield-alt"></i> AI PROTECTION</div>
+            <div class="protect-title">Your financial safety, protected by AI</div>
+            <div class="protect-desc">Aman AI monitors threats in real-time so you don't have to</div>
+            <div class="protect-toggle">
+                <div><div class="toggle-title">Protection Active</div><div class="toggle-desc">AI is monitoring for threats</div></div>
+                <label class="switch">
+                    <input type="checkbox" id="aiToggle" checked onchange="toggleProtection()">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="section-title">QUICK ACTIONS</div>
+        <div class="quick-actions-grid">
+            <div class="action-card" id="btn-analyze" onclick="openAnalyzeModal()">
+                <div class="icon-bg blue"><i class="fas fa-search"></i></div>
+                <div class="action-title">Analyze</div>
+                <div class="action-desc">SMS ,Email , Links</div>
+            </div>
+            <div class="action-card" id="btn-livecall" onclick="simulateCall()">
+                <div class="icon-bg brown"><i class="fas fa-phone-alt"></i></div>
+                <div class="action-title">Live call</div>
+                <div class="action-desc">Real-time protection</div>
+            </div>
+            <div class="action-card" id="btn-history" onclick="fetchHistory()">
+                <div class="icon-bg purple"><i class="fas fa-clock"></i></div>
+                <div class="action-title">History</div>
+                <div class="action-desc">Past analyses</div>
+            </div>
+            <div class="action-card" id="btn-trust" onclick="openTrustModal()">
+                <div class="icon-bg green"><i class="fas fa-check-circle"></i></div>
+                <div class="action-title">Trust Check</div>
+                <div class="action-desc">Verify caller ID</div>
+            </div>
+        </div>
+        <div class="section-title">RECENT ANALYSES</div>
+        <div class="analysis-list" id="historyList">
+            <div class="analysis-item">
+                <div style="background:#2b3b4f; width:36px; height:36px; border-radius:8px; display:flex; justify-content:center; align-items:center;"><i class="fas fa-comment"></i></div>
+                <div><div class="list-title">Prize / Lottery Scam</div><div class="list-desc">SMS . Just new</div></div>
+                <div class="badge-high">high</div>
+            </div>
+        </div>
+        <div class="btn-back" onclick="goTo('home')"><i class="fas fa-arrow-left"></i> Back to Home</div>
+    </div>
+
+    <!-- ─── TRANSFER SCREEN (New) ────────────────────────────────── -->
+    <div id="transfer" class="screen">
+        <div class="screen-header"><h2>Transfer</h2></div>
+        <div class="input-group" style="margin-bottom: 16px;">
+            <label style="display:block; font-size:14px; font-weight:500; color:#9ca3af; margin-bottom:4px;">From</label>
+            <div class="input-wrap" style="justify-content: space-between; background:#132b4a; padding:14px 16px; border-radius:12px; display:flex; align-items:center;">
+                <span style="color:#ffffff;">Current Account ***1234</span> 
+                <i class="fas fa-chevron-down" style="color:#9ca3af;"></i>
+            </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 16px;">
+            <label style="display:block; font-size:14px; font-weight:500; color:#9ca3af; margin-bottom:4px;">To (Beneficiary)</label>
+            <div class="input-wrap" style="background:#132b4a; padding:14px 16px; border-radius:12px; display:flex; align-items:center; gap:12px;">
+                <i class="fas fa-user" style="color:#d1d5db; width:20px; text-align:center;"></i>
+                <input type="text" placeholder="Search or select contact" style="flex:1; background:transparent; border:none; color:#ffffff; font-size:16px; outline:none;">
+            </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 24px;">
+            <label style="display:block; font-size:14px; font-weight:500; color:#9ca3af; margin-bottom:4px;">Amount (SAR)</label>
+            <div class="input-wrap" style="background:#132b4a; padding:14px 16px; border-radius:12px; display:flex; align-items:center; gap:12px;">
+                <span style="color:#d1d5db; font-weight:600;">ر.س</span>
+                <input type="text" placeholder="0.00" style="flex:1; background:transparent; border:none; color:#ffffff; font-size:16px; outline:none;">
+            </div>
+        </div>
+        <button class="btn-orange" style="padding:16px; border:none; border-radius:30px; background:#f7931e; color:#0a1226; font-weight:700; font-size:16px; cursor:pointer; width:100%;">Transfer Now</button>
+        <div style="margin-top:12px; text-align:center; color:#9ca3af; font-size:12px;">No fees for Alinma to Alinma transfers</div>
+    </div>
+
+    <!-- ─── PAYMENTS SCREEN (New) ────────────────────────────────── -->
+    <div id="payments" class="screen">
+        <div class="screen-header"><h2>Payments</h2></div>
+        <div class="list-item"><i class="fas fa-bolt"></i><div class="info"><div class="title">Electricity</div><div class="desc">Pay your electricity bill</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-water"></i><div class="info"><div class="title">Water</div><div class="desc">National Water Company</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-wifi"></i><div class="info"><div class="title">Internet</div><div class="desc">STC, Mobily, Zain</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-mobile-alt"></i><div class="info"><div class="title">Mobile</div><div class="desc">Postpaid / Prepaid</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-school"></i><div class="info"><div class="title">Education</div><div class="desc">School & University fees</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+    </div>
+
+    <!-- ─── STORE SCREEN (New) ────────────────────────────────────── -->
+    <div id="store" class="screen">
+        <div class="screen-header"><h2>Alinma Store</h2></div>
+        <div class="list-item"><i class="fas fa-gift"></i><div class="info"><div class="title">Rewards</div><div class="desc">Redeem your akthr points</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-ticket-alt"></i><div class="info"><div class="title">Coupons</div><div class="desc">Exclusive discounts and offers</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item" onclick="goTo('ai-protection')"><i class="fas fa-shield-alt"></i><div class="info"><div class="title">Alinma Protect</div><div class="desc">Aman AI security suite</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+        <div class="list-item"><i class="fas fa-credit-card"></i><div class="info"><div class="title">Cards</div><div class="desc">Apply for new mada & credit cards</div></div><i class="fas fa-chevron-right" style="color: #9ca3af; font-size: 14px; margin-left: auto;"></i></div>
+    </div>
+
+    <!-- ─── BOTTOM NAV ──────────────────────────────────────────── -->
+    <div id="bottom-nav">
+        <button class="nav-item active" data-screen="home" onclick="goTo('home')"><i class="fas fa-home"></i> Home</button>
+        <button class="nav-item" data-screen="transfer" onclick="goTo('transfer')"><i class="fas fa-arrow-right-arrow-left"></i> Transfer</button>
+        <button class="nav-item" data-screen="payments" onclick="goTo('payments')"><i class="fas fa-camera"></i> Payments</button>
+        <button class="nav-item" data-screen="store" onclick="goTo('store')"><i class="fas fa-store"></i> Store</button>
+        <button class="nav-item" data-screen="ai-protection" onclick="goTo('ai-protection')"><i class="fas fa-th-large"></i> Services</button>
+    </div>
+
+    <!-- ─── FUNCTIONAL OVERLAYS & TOASTS ────────────────────────────── -->
+    <div id="protection-bubble" onclick="showAnalysis()">
+        <div class="pulse" id="bubble-pulse"></div>
+        <div class="text"><div class="main" id="bubble-main">Alinma Protect</div><div class="sub" id="bubble-sub">Powered by Aman AI</div></div>
+    </div>
+
+    <div id="modal-overlay">
+        <div class="modal-card">
+            <div class="close" onclick="closeModal()">&times;</div>
+            <h3 id="modal-title">Analyze</h3>
+            <div id="modal-body">
+                <label style="color:#9ca3af; font-size:12px;">Enter SMS, Email, or URL</label>
+                <input type="text" id="analyzeInput" placeholder="e.g. http://fake-bank.com">
+                <div style="text-align:center; color:#9ca3af; font-size:12px; margin:8px 0;">- OR -</div>
+                <button onclick="document.getElementById('fileInput').click();" style="width:100%; background:transparent; border:1px dashed #2a4a6f; padding:12px; border-radius:8px; color:#fff; cursor:pointer;"><i class="fas fa-upload"></i> Upload Screenshot</button>
+                <input type="file" id="fileInput" accept="image/*" onchange="uploadImageToAPI()" style="display:none;">
+                <button class="btn-submit" id="submitBtn" onclick="submitAnalyze()">Analyze Now</button>
+                <div id="resultBox" class="result-box" style="display:none; margin-top:12px;">
+                    <div style="color:#fff; font-weight:600;" id="resultTitle">Analysis Result</div>
+                    <div style="color:#9ca3af; font-size:14px; margin-top:4px;" id="resultSummary"></div>
+                    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                        <span style="background:#1e3a5f; padding:2px 8px; border-radius:12px; font-size:12px; color:#fff;" id="resultScore">Risk: N/A</span>
+                        <span style="background:#1e3a5f; padding:2px 8px; border-radius:12px; font-size:12px;" id="resultLevel">Level: N/A</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-modal-overlay">
+        <div class="content">
+            <div style="display:flex; justify-content:space-between; align-items:center; color:#fff; margin-bottom:16px;">
+                <h3>Full History Log</h3>
+                <div style="color:#9ca3af; cursor:pointer;" onclick="document.getElementById('history-modal-overlay').style.display='none';">Close</div>
+            </div>
+            <div id="history-log-content"></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+</div>
+
+<script>
+    // ─── GLOBAL STATE ────────────────────────────────────────────
+    const API_BASE = "http://127.0.0.1:8000";
+    let isProtectionActive = true;
+
+    // ─── NAVIGATION ──────────────────────────────────────────────
+    function goTo(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelector(`.nav-item[data-screen="${id}"]`)?.classList.add('active');
+        document.getElementById('protection-bubble').style.display = 'none';
+        document.getElementById('modal-overlay').style.display = 'none';
+    }
+    setTimeout(() => goTo('login'), 3500);
+
+    // ─── TOGGLE PROTECTION ──────────────────────────────────────
+    function toggleProtection() {
+        isProtectionActive = document.getElementById('aiToggle').checked;
+        showToast(isProtectionActive ? "Protection Active" : "Protection Inactive", "info");
+        document.querySelectorAll('.action-card').forEach(c => c.style.opacity = isProtectionActive ? '1' : '0.5');
+    }
+
+    // ─── TOAST SYSTEM ────────────────────────────────────────────
+    function showToast(msg, type='info') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = type;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    // ─── MODAL (ANALYZE) ─────────────────────────────────────────
+    function openAnalyzeModal() {
+        if(!isProtectionActive) return showToast("Protection inactive. Turn on to analyze.", "error");
+        document.getElementById('modal-title').textContent = "Analyze Content";
+        document.getElementById('modal-body').innerHTML = `
+            <label style="color:#9ca3af; font-size:12px;">Enter SMS, Email, or URL</label>
+            <input type="text" id="analyzeInput" placeholder="e.g. http://fake-bank.com">
+            <div style="text-align:center; color:#9ca3af; font-size:12px; margin:8px 0;">- OR -</div>
+            <button onclick="document.getElementById('fileInput').click();" style="width:100%; background:transparent; border:1px dashed #2a4a6f; padding:12px; border-radius:8px; color:#fff; cursor:pointer;"><i class="fas fa-upload"></i> Upload Screenshot</button>
+            <input type="file" id="fileInput" accept="image/*" onchange="uploadImageToAPI()" style="display:none;">
+            <button class="btn-submit" id="submitBtn" onclick="submitAnalyze()">Analyze Now</button>
+            <div id="resultBox" class="result-box" style="display:none; margin-top:12px;">
+                <div style="color:#fff; font-weight:600;" id="resultTitle">Analysis Result</div>
+                <div style="color:#9ca3af; font-size:14px; margin-top:4px;" id="resultSummary"></div>
+                <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <span style="background:#1e3a5f; padding:2px 8px; border-radius:12px; font-size:12px; color:#fff;" id="resultScore">Risk: N/A</span>
+                    <span style="background:#1e3a5f; padding:2px 8px; border-radius:12px; font-size:12px;" id="resultLevel">Level: N/A</span>
+                </div>
+            </div>
+        `;
+        document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function openTrustModal() {
+        if(!isProtectionActive) return showToast("Protection inactive.", "error");
+        document.getElementById('modal-title').textContent = "Trust Check";
+        document.getElementById('modal-body').innerHTML = `
+            <label style="color:#9ca3af; font-size:12px;">Enter Phone Number or URL to verify</label>
+            <input type="text" id="analyzeInput" placeholder="e.g. +966 55 123 4567">
+            <button class="btn-submit" id="submitBtn" onclick="submitTrustCheck()">Verify Sender</button>
+            <div id="resultBox" class="result-box" style="display:none; margin-top:12px;">
+                <div style="color:#fff; font-weight:600;" id="resultTitle">Trust Analysis</div>
+                <div style="color:#9ca3af; font-size:14px; margin-top:4px;" id="resultSummary"></div>
+                <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <span style="background:#1e3a5f; padding:2px 8px; border-radius:12px; font-size:12px; color:#fff;" id="resultScore">Risk: N/A</span>
+                </div>
+            </div>
+        `;
+        document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
+    // ─── SUBMIT HANDLERS ─────────────────────────────────────────
+    async function submitAnalyze() {
+        const btn = document.getElementById('submitBtn');
+        const input = document.getElementById('analyzeInput');
+        const val = input.value.trim();
+        if(!val) return showToast("Please enter content to analyze.", "error");
+        btn.textContent = 'Analyzing...'; btn.style.opacity = '0.7';
+        try {
+            const type = val.startsWith('http') ? 'url' : 'sms';
+            const res = await fetch(`${API_BASE}/analyze`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: type, content: val })
+            });
+            if(!res.ok) throw new Error("API Error");
+            const data = await res.json();
+            displayResult(data.fraud_analysis || data);
+        } catch(e) { showToast("Error connecting to backend.", "error"); }
+        finally { btn.textContent = 'Analyze Now'; btn.style.opacity = '1'; }
+    }
+
+    async function uploadImageToAPI() {
+        const file = document.getElementById('fileInput').files[0];
+        if(!file) return;
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Uploading Image...'; btn.style.opacity = '0.7';
+        const formData = new FormData(); formData.append('file', file);
+        try {
+            const res = await fetch(`${API_BASE}/analyze-image`, { method: 'POST', body: formData });
+            if(!res.ok) throw new Error("Image API Error");
+            const data = await res.json();
+            displayResult(data.fraud_analysis);
+            document.querySelector('#modal-body button[onclick*="fileInput.click()"]').style.display = 'none';
+        } catch(e) { showToast("Image upload failed.", "error"); }
+        finally { btn.textContent = 'Analyze Now'; btn.style.opacity = '1'; }
+    }
+
+    async function submitTrustCheck() {
+        const input = document.getElementById('analyzeInput');
+        const val = input.value.trim();
+        if(!val) return showToast("Enter a number or URL to check", "error");
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Verifying...'; btn.style.opacity = '0.7';
+        try {
+            const res = await fetch(`${API_BASE}/analyze`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'phone', content: `Verify this caller ID for fraud: ${val}` })
+            });
+            const data = await res.json();
+            displayResult(data.fraud_analysis);
+        } catch(e) { showToast("API offline.", "error"); }
+        finally { btn.textContent = 'Verify Sender'; btn.style.opacity = '1'; }
+    }
+
+    function displayResult(analysis) {
+        const box = document.getElementById('resultBox');
+        box.style.display = 'block';
+        document.getElementById('resultSummary').textContent = analysis.summary || "No summary provided.";
+        document.getElementById('resultScore').textContent = `Risk: ${analysis.risk_score}/100`;
+        const levelSpan = document.getElementById('resultLevel');
+        const level = analysis.risk_level || "Unknown";
+        levelSpan.textContent = `Level: ${level}`;
+        if(level === 'High') levelSpan.style.color = '#f44336';
+        else if(level === 'Medium') levelSpan.style.color = '#ff9800';
+        else if(level === 'Low') levelSpan.style.color = '#4caf50';
+        else levelSpan.style.color = '#fff';
+        if(document.getElementById('analyzeInput')?.value.includes('Alinma')) {
+            showToast("✅ Protected by Aman AI - Alinma Verified", "success");
+        }
+    }
+
+    // ─── FETCH HISTORY ────────────────────────────────────────────
+    async function fetchHistory() {
+        if(!isProtectionActive) return showToast("Protection is inactive.", "error");
+        try {
+            const res = await fetch(`${API_BASE}/logs`);
+            if(!res.ok) throw new Error("API error");
+            const data = await res.json();
+            const list = document.getElementById('historyList');
+            const modalList = document.getElementById('history-log-content');
+            if(data.count === 0) {
+                list.innerHTML = `<div class="analysis-item"><div style="color:#9ca3af;">No history found.</div></div>`;
+                modalList.innerHTML = `<div style="color:#9ca3af;">No history found.</div>`;
+                document.getElementById('history-modal-overlay').style.display = 'flex';
+                return;
+            }
+            let html = `<div style="color:#fff; font-size:12px; margin-bottom:8px;">Total Logs: ${data.count}</div>`;
+            let modalHtml = '';
+            data.logs.slice(-5).reverse().forEach(log => {
+                const riskColor = log.risk_level === 'High' ? '#f44336' : log.risk_level === 'Medium' ? '#ff9800' : '#4caf50';
+                html += `
+                    <div class="analysis-item">
+                        <div style="background:#2b3b4f; width:36px; height:36px; border-radius:8px; display:flex; justify-content:center; align-items:center;"><i class="fas fa-${log.type === 'audio' ? 'microphone' : log.type === 'image' ? 'image' : 'comment'}"></i></div>
+                        <div><div style="font-weight:600;">${log.type.toUpperCase()}</div><div style="font-size:11px; color:#9ca3af;">${new Date(log.timestamp).toLocaleTimeString()}</div></div>
+                        <span class="badge-high" style="background:${riskColor}20; color:${riskColor}; border:1px solid ${riskColor}; padding:2px 12px;">${log.risk_level}</span>
+                    </div>
+                `;
+                modalHtml += `
+                    <div style="background:#0a1226; padding:12px; border-radius:8px; margin-bottom:8px; border:1px solid #1e3a5f;">
+                        <div style="display:flex; justify-content:space-between; color:#9ca3af; font-size:12px;"><span>${log.type} - ${new Date(log.timestamp).toLocaleString()}</span><span style="color:${riskColor};">${log.risk_level}</span></div>
+                        <div style="color:#fff; font-weight:500; margin:4px 0;">${log.content}</div>
+                        <div style="color:#9ca3af; font-size:12px;">${log.summary}</div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            modalList.innerHTML = modalHtml;
+            document.getElementById('history-modal-overlay').style.display = 'flex';
+        } catch(e) { showToast("Failed to fetch history.", "error"); }
+    }
+
+    // ─── LIVE CALL SIMULATION ──────────────────────────────────────
+    function simulateCall() {
+        if(!isProtectionActive) return showToast("Cannot simulate call. Protection inactive.", "error");
+        const b = document.getElementById('protection-bubble');
+        const p = document.getElementById('bubble-pulse');
+        const m = document.getElementById('bubble-main');
+        const s = document.getElementById('bubble-sub');
+        b.style.display = 'flex'; p.style.background = '#4caf50'; m.textContent = 'Alinma Protect'; s.textContent = 'Connected - Monitoring';
+        setTimeout(() => { p.style.background = '#ff9800'; m.textContent = 'Analyzing speech...'; }, 2000);
+        setTimeout(() => { p.style.background = '#f44336'; m.textContent = '⚠ Fraud Detected'; s.textContent = 'End call immediately'; }, 4000);
+        setTimeout(() => {
+            document.getElementById('modal-title').textContent = "Live Call Alert";
+            document.getElementById('modal-body').innerHTML = `
+                <div style="color:#fff; background:#1e3a5f; padding:12px; border-radius:8px; text-align:center;">
+                    <div style="font-size:24px; color:#f44336;"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div style="font-weight:700; margin:8px 0;">Synthetic voice detected</div>
+                    <div style="font-size:13px; color:#9ca3af;">The caller is attempting to impersonate an Alinma representative.</div>
+                    <div style="margin-top:8px; font-size:12px; color:#f44336;">Recommendation: Hang up immediately.</div>
+                </div>
+            `;
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }, 5000);
+    }
+</script>
+</body>
+</html>
