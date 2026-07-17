@@ -185,7 +185,6 @@ Aman AI is offered as an **API-first product** that banks integrate directly int
 - مريم مودوب فاقبو
 - سلوى حسين
 - محمد ال فرج
-- مأمون فرج
 
  
 ## 📄 License
